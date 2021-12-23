@@ -3,6 +3,7 @@ package fertdt;
 import fertdt.entities.Game;
 import fertdt.exceptions.ServerEventListenerException;
 import fertdt.exceptions.ServerException;
+import fertdt.helpers.GameStateHelper;
 import fertdt.listeners.ServerEventListener;
 
 import java.io.IOException;
@@ -77,11 +78,30 @@ public class SocketServer implements Server {
                         }
                     }
                 }
-            } catch (IOException | ServerEventListenerException | ServerException ignored) {
+            } catch (IOException | ServerEventListenerException | ServerException e) {
+                handleDisconnection(connectionId);
             }
         };
         Thread thread = new Thread(runnable);
         thread.start();
+    }
+
+    protected void handleDisconnection(int connectionId) {
+        int gameId = GameStateHelper.gameIndexByConnectionId(connectionId, this);
+        if (gameId != -1) {
+            Game game = games.get(gameId);
+            if (game.getStatus() != Game.AWAIT) {
+                int anotherPlayer;
+                if (game.getFirstPlayer() == connectionId) anotherPlayer = game.getSecondPlayer();
+                else anotherPlayer = game.getFirstPlayer();
+                ResponseMessage winMessage = ResponseMessage.createFinishMessage(ResponseMessage.YOU);
+                try {
+                    sendMessage(anotherPlayer, winMessage);
+                } catch (ServerException ignored) {
+                }
+            }
+            game.setStatus(Game.FINISHED);
+        }
     }
 
     @Override

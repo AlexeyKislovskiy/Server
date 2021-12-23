@@ -9,7 +9,8 @@ public class GameStateHelper {
     public static int gameIndexByRoomId(int roomId, Server server) {
         List<Game> games = server.getGames();
         for (Game el : games) {
-            if (el.getRoomId() == roomId && el.getSecondPlayer() == null) return games.indexOf(el);
+            if (el.getRoomId() == roomId && el.getSecondPlayer() == null && el.getStatus() != Game.FINISHED)
+                return games.indexOf(el);
         }
         return -1;
     }

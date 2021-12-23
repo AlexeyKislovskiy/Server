@@ -38,14 +38,17 @@ public class CharacterAndSkillSelectListener extends AbstractServerEventListener
         }
         List<Character> setCharacters = new ArrayList<>();
         List<PassiveSkill> setSkills = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        List<Integer> charactersId = new ArrayList<>(), skillsId = new ArrayList<>();
+        for (int i = 0; i < Character.NUM_OF_CHARACTERS_FOR_EACH_PLAYER; i++) {
             if (characters[i] > Character.NUM_OF_CHARACTERS || skills[i] > PassiveSkill.NUM_OF_PASSIVE_SKILLS ||
-                    setCharacters.contains(new Character(characters[i])) || setSkills.contains(new PassiveSkill(skills[i]))) {
+                    charactersId.contains(characters[i]) || skillsId.contains(skills[i])) {
                 MessageSender.sendIncorrectRequestMessage(connectionId, server);
                 return;
             }
             setCharacters.add(new Character(characters[i]));
             setSkills.add(new PassiveSkill(skills[i]));
+            charactersId.add(characters[i]);
+            skillsId.add(skills[i]);
         }
         if (game.getFirstPlayer() == connectionId) {
             game.setFirstCharacters(setCharacters.toArray(new Character[0]));
@@ -59,8 +62,8 @@ public class CharacterAndSkillSelectListener extends AbstractServerEventListener
             int currentTurn = (int) (Math.random() * 2 + 1);
             game.setCurrentTurn(currentTurn);
             Field field = Field.generateField(10, 10);
-            game.setFirstField(field);
             Gson gson = new Gson();
+            game.setFirstField(gson.fromJson(gson.toJson(field), Field.class));
             game.setSecondField(gson.fromJson(gson.toJson(field), Field.class));
             MessageSender.sendGameStateMessage(game, server);
             game.setStatus(Game.IN_PROGRESS);

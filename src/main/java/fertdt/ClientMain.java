@@ -8,36 +8,37 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class ClientMain {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
         Socket s = new Socket(InetAddress.getLocalHost(), 10034);
         OutputStream out = s.getOutputStream();
         DataOutputStream dos = new DataOutputStream(out);
-        RequestMessage requestMessage = RequestMessage.createStartRequestMessage(34);
-        byte[] data = requestMessage.getData();
-        RequestMessage requestMessage1 = RequestMessage.createStopWaitingStartRequestMessage();
-        byte[] data1 = requestMessage1.getData();
-        int[] characters = new int[]{1, 2, 3}, skills = new int[]{1, 2, 3};
-        RequestMessage requestMessage2 = RequestMessage.createCharacterAndSkillSelectMessage(characters, skills);
-        byte[] data2 = requestMessage2.getData();
-        RequestMessage requestMessage3 = RequestMessage.createExitRequestMessage();
-        byte[] data3 = requestMessage3.getData();
-        RequestMessage requestMessage4 = RequestMessage.createNormalSkillMessage(1, new int[0], new int[0], new int[0], new int[0], new int[]{1}, new int[0]);
-        byte[] data4 = requestMessage4.getData();
-//        RequestMessage requestMessage4 = RequestMessage.createNormalSkillMessage(0, new int[]{0}, new int[]{0}, new int[0], new int[0], new int[0], new int[0]);
-//        byte[] data4 = requestMessage4.getData();
+        int[] x = new int[100], y = new int[100];
+        for (int i = 0; i < 100; i++) {
+            x[i] = i / 10;
+            y[i] = i % 10;
+        }
+        Map<Integer, RequestMessage> map = Map.ofEntries(
+                Map.entry(1, RequestMessage.createStartRequestMessage(34)),
+                Map.entry(2, RequestMessage.createStopWaitingStartRequestMessage()),
+                Map.entry(3, RequestMessage.createCharacterAndSkillSelectMessage(new int[]{1, 2, 3}, new int[]{1, 2, 3})),
+                Map.entry(4, RequestMessage.createNormalSkillMessage(0, new int[0], new int[0], new int[0], new int[0], new int[0], new int[0])),
+                Map.entry(5, RequestMessage.createNormalSkillMessage(1, new int[0], new int[0], new int[0], new int[0], new int[0], new int[0])),
+                Map.entry(6, RequestMessage.createNormalSkillMessage(2, new int[0], new int[0], new int[0], new int[0], new int[0], new int[0])),
+                Map.entry(7, RequestMessage.createNormalMoveMessage(0, x, y)),
+                Map.entry(8, RequestMessage.createNormalMoveMessage(1, x, y)),
+                Map.entry(9, RequestMessage.createNormalMoveMessage(2, x, y)),
+                Map.entry(10, RequestMessage.createExitRequestMessage())
+        );
         read(s);
         while (true) {
-            dos.write(data);
+            int n = sc.nextInt();
+            dos.write(map.get(n).getData());
             dos.flush();
-            Thread.sleep(3000);
-            dos.write(data2);
-            dos.flush();
-            Thread.sleep(3000);
-            dos.write(data4);
-            dos.flush();
-            Thread.sleep(3000);
         }
 
     }
@@ -59,8 +60,7 @@ public class ClientMain {
                         }
                     }
                 }
-            } catch (IOException e) {
-
+            } catch (IOException ignored) {
             }
         };
         Thread thread = new Thread(runnable);

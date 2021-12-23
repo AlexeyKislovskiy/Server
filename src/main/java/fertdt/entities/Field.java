@@ -5,16 +5,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Field{
+public class Field {
     private int width, height;
     private List<List<Integer>> blockState, blockStateInitial;
     private int[][] x, y, g;
+    private Block[] blocks;
 
     private Field(int width, int height, List<List<Integer>> blockState, List<List<Integer>> blockStateInitial, int[][] x, int[][] y, int[][] g) {
         this.width = width;
         this.height = height;
         this.blockState = blockState;
         this.blockStateInitial = blockStateInitial;
+        blocks = new Block[blockStateInitial.size()];
+        for (int i = 0; i < blocks.length; i++) {
+            blocks[i] = new Block(blockStateInitial.get(i).get(0), blockStateInitial.get(i).get(1));
+        }
         this.x = x;
         this.y = y;
         this.g = g;
@@ -74,6 +79,10 @@ public class Field{
     }
 
     public void regenerateField() {
+        blocks = new Block[blockStateInitial.size()];
+        for (int i = 0; i < blocks.length; i++) {
+            blocks[i] = new Block(blockStateInitial.get(i).get(0), blockStateInitial.get(i).get(1));
+        }
         this.blockState = new ArrayList<>(blockStateInitial);
     }
 
@@ -117,4 +126,7 @@ public class Field{
         return g;
     }
 
+    public Block[] getBlocks() {
+        return blocks;
+    }
 }

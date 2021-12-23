@@ -1,7 +1,6 @@
 package fertdt.listeners;
 
 import fertdt.RequestMessage;
-import fertdt.ResponseMessage;
 import fertdt.entities.Game;
 import fertdt.exceptions.ServerEventListenerException;
 import fertdt.exceptions.ServerException;
@@ -19,8 +18,8 @@ public class StopWaitingStartRequest extends AbstractServerEventListener {
             return;
         }
         Game game = server.getGames().get(GameStateHelper.gameIndexByConnectionId(connectionId, server));
-        server.getGames().remove(game);
-        MessageSender.sendOKMessage(connectionId,server);
+        game.setStatus(Game.FINISHED);
+        MessageSender.sendOKMessage(connectionId, server);
     }
 
     @Override

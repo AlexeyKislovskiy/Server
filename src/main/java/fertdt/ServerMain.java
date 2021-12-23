@@ -10,10 +10,10 @@ public class ServerMain {
             server.registerListener(new StartRequestListener());
             server.registerListener(new StopWaitingStartRequest());
             server.registerListener(new CharacterAndSkillSelectListener());
-            server.registerListener(new NormalMoveEventListener());
+            server.registerListener(new NormalMoveListener());
             server.registerListener(new NormalSkillListener());
             server.registerListener(new SpecialSkillListener());
-            server.registerListener(new ExitRequestEventListener());
+            server.registerListener(new ExitRequestListener());
             server.start();
         } catch (ServerException e) {
             e.printStackTrace();

@@ -10,20 +10,23 @@ import java.util.Objects;
 
 public class Character {
     public static final int NUM_OF_CHARACTERS = 3;
+
+    public static final int NUM_OF_CHARACTERS_FOR_EACH_PLAYER = 3;
+
     public static final Map<Integer, Integer> BASIC_DAMAGE = Map.ofEntries(
             Map.entry(1, 30),
             Map.entry(2, 40),
             Map.entry(3, 50)
     );
     public static final Map<Integer, Skill> NORMAL_SKILLS = Map.ofEntries(
-            Map.entry(1, new Skill(new Effect[]{new Effect(7, 10, 5, 0, Effect.TARGET_YOU)}, 5)),
-            Map.entry(2, new Skill(new Effect[]{new Effect(1, 10, 5, 0, Effect.TARGET_YOU)}, 5)),
-            Map.entry(3, new Skill(new Effect[]{new Effect(1, 10, 5, 0, Effect.TARGET_YOU)}, 5))
+            Map.entry(1, new Skill(new Effect[]{new Effect(7, 10, 1, 0, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
+            Map.entry(2, new Skill(new Effect[]{new Effect(1, 10, 1, 0, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
+            Map.entry(3, new Skill(new Effect[]{new Effect(1, 10, 1, 0, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5))
     );
     public static final Map<Integer, SpecialSkill> SPECIAL_SKILLS = Map.ofEntries(
-            Map.entry(1, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU)}, 25)),
-            Map.entry(2, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU)}, 25)),
-            Map.entry(3, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU)}, 25))
+            Map.entry(1, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU, Effect.TARGET_LIMITED)}, 25)),
+            Map.entry(2, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU, Effect.TARGET_LIMITED)}, 25)),
+            Map.entry(3, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU, Effect.TARGET_LIMITED)}, 25))
     );
     private int id, basicDamage;
     private Skill normalSkill;

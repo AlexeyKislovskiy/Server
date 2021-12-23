@@ -3,6 +3,8 @@ package fertdt.entities;
 public class Game {
     public static final int RANDOM_ROOM_ID = 0;
 
+    public static final int GAME_DURATION = 20;
+
     public static final int AWAIT = 1;
     public static final int CHARACTERS_SELECTING = 2;
     public static final int IN_PROGRESS = 3;

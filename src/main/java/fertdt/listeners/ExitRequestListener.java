@@ -8,7 +8,7 @@ import fertdt.exceptions.ServerException;
 import fertdt.helpers.GameStateHelper;
 import fertdt.helpers.MessageSender;
 
-public class ExitRequestEventListener extends AbstractServerEventListener {
+public class ExitRequestListener extends AbstractServerEventListener {
     @Override
     public void handle(int connectionId, RequestMessage message) throws ServerEventListenerException, ServerException {
         if (!this.init) {

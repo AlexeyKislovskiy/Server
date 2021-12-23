@@ -7,6 +7,7 @@ import fertdt.entities.Game;
 import fertdt.exceptions.ServerEventListenerException;
 import fertdt.exceptions.ServerException;
 import fertdt.helpers.EffectHelper;
+import fertdt.helpers.GameHelper;
 import fertdt.helpers.GameStateHelper;
 import fertdt.helpers.MessageSender;
 
@@ -52,9 +53,10 @@ public class NormalSkillListener extends AbstractServerEventListener {
                 xMy = message.getXMy(), yMy = message.getYMy(),
                 xOpponent = message.getXOpponent(), yOpponent = message.getYOpponent();
 
-        EffectHelper.addEffectsToCharacters(true, myCharacters, opponentsCharacters, character, allMyCharacters, allOpponentsCharacters);
-        EffectHelper.addEffectsToBlocks(true, xMy, yMy, xOpponent, yOpponent, character, myField, opponentsField);
+        EffectHelper.addEffectsToCharacters(true, game.getCurrentTurn(), myCharacters, opponentsCharacters, character, allMyCharacters, allOpponentsCharacters);
+        EffectHelper.addEffectsToBlocks(true,game.getCurrentTurn(), xMy, yMy, xOpponent, yOpponent, character, myField, opponentsField);
         MessageSender.sendGameStateMessage(game, server);
+        GameHelper.allCharactersMadeMoveCheck(allMyCharacters, game, server);
     }
 
     @Override

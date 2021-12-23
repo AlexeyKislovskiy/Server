@@ -6,12 +6,11 @@ import fertdt.entities.Field;
 import fertdt.entities.Game;
 import fertdt.exceptions.ServerEventListenerException;
 import fertdt.exceptions.ServerException;
-import fertdt.helpers.EffectHelper;
 import fertdt.helpers.GameHelper;
 import fertdt.helpers.GameStateHelper;
 import fertdt.helpers.MessageSender;
 
-public class SpecialSkillListener extends AbstractServerEventListener {
+public class NormalMoveListener extends AbstractServerEventListener {
     @Override
     public void handle(int connectionId, RequestMessage message) throws ServerEventListenerException, ServerException {
         if (!this.init) {
@@ -28,42 +27,33 @@ public class SpecialSkillListener extends AbstractServerEventListener {
             return;
         }
         int characterNumber = message.getCharacter();
-        Character[] allMyCharacters, allOpponentsCharacters;
-        Field myField, opponentsField;
-        int[] myPoints;
+        Character[] allMyCharacters;
+        Field field;
+        int[] points;
         if (connectionId == game.getFirstPlayer()) {
             allMyCharacters = game.getFirstCharacters();
-            allOpponentsCharacters = game.getSecondCharacters();
-            myField = game.getFirstField();
-            opponentsField = game.getSecondField();
-            myPoints = game.getFirstPoints();
+            field = game.getFirstField();
+            points = game.getFirstPoints();
         } else {
             allMyCharacters = game.getSecondCharacters();
-            allOpponentsCharacters = game.getFirstCharacters();
-            myField = game.getSecondField();
-            opponentsField = game.getFirstField();
-            myPoints = game.getSecondPoints();
+            field = game.getSecondField();
+            points = game.getSecondPoints();
         }
         Character character = allMyCharacters[characterNumber];
-        if (character == null || character.getSpecialSkill().getCost() > myPoints[1] || character.isMadeMove()) {
+        if (character == null || character.isMadeMove()) {
             MessageSender.sendIncorrectRequestMessage(connectionId, server);
             return;
         }
         MessageSender.sendOKMessage(connectionId, server);
         character.setMadeMove(true);
-        myPoints[1] -= character.getSpecialSkill().getCost();
-        int[] myCharacters = message.getCharactersMy(), opponentsCharacters = message.getCharactersOpponent(),
-                xMy = message.getXMy(), yMy = message.getYMy(),
-                xOpponent = message.getXOpponent(), yOpponent = message.getYOpponent();
-
-        EffectHelper.addEffectsToCharacters(false, game.getCurrentTurn(), myCharacters, opponentsCharacters, character, allMyCharacters, allOpponentsCharacters);
-        EffectHelper.addEffectsToBlocks(false, game.getCurrentTurn(), xMy, yMy, xOpponent, yOpponent, character, myField, opponentsField);
+        int[] x = message.getXMy(), y = message.getYMy();
+        GameHelper.doNormalMove(character, field, x, y, points);
         MessageSender.sendGameStateMessage(game, server);
         GameHelper.allCharactersMadeMoveCheck(allMyCharacters, game, server);
     }
 
     @Override
     public int getType() {
-        return RequestMessage.SPECIAL_SKILL;
+        return RequestMessage.NORMAL_MOVE;
     }
 }

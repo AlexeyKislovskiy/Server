@@ -16,13 +16,15 @@ public class MessageSender {
         server.sendMessage(connectionId, responseMessage);
     }
 
-    public static void sendGameStateMessage(Game game,Server server) throws ServerException {
-        ResponseMessage responseMessage1 = ResponseMessage.createGameStateMessage(game.getFirstField().getBlockState(), game.getSecondField().getBlockState(),
-                game.getFirstField().getX(), game.getFirstField().getY(), CharacterHelper.charactersArrayRepresentation(game.getFirstCharacters()),
-                CharacterHelper.charactersArrayRepresentation(game.getSecondCharacters()), game.getFirstPoints(), game.getSecondPoints());
-        ResponseMessage responseMessage2 = ResponseMessage.createGameStateMessage(game.getSecondField().getBlockState(), game.getFirstField().getBlockState(),
-                game.getSecondField().getX(), game.getSecondField().getY(), CharacterHelper.charactersArrayRepresentation(game.getSecondCharacters()),
-                CharacterHelper.charactersArrayRepresentation(game.getFirstCharacters()), game.getSecondPoints(), game.getFirstPoints());
+    public static void sendGameStateMessage(Game game, Server server) throws ServerException {
+        ResponseMessage responseMessage1 = ResponseMessage.createGameStateMessage(ArrayRepresentationHelper.blocksArrayRepresentation
+                        (game.getFirstField().getBlocks()), ArrayRepresentationHelper.blocksArrayRepresentation(game.getSecondField().getBlocks()),
+                game.getFirstField().getX(), game.getFirstField().getY(), ArrayRepresentationHelper.charactersArrayRepresentation(game.getFirstCharacters()),
+                ArrayRepresentationHelper.charactersArrayRepresentation(game.getSecondCharacters()), game.getFirstPoints(), game.getSecondPoints());
+        ResponseMessage responseMessage2 = ResponseMessage.createGameStateMessage(ArrayRepresentationHelper.blocksArrayRepresentation
+                        (game.getSecondField().getBlocks()), ArrayRepresentationHelper.blocksArrayRepresentation(game.getFirstField().getBlocks()),
+                game.getSecondField().getX(), game.getSecondField().getY(), ArrayRepresentationHelper.charactersArrayRepresentation(game.getSecondCharacters()),
+                ArrayRepresentationHelper.charactersArrayRepresentation(game.getFirstCharacters()), game.getSecondPoints(), game.getFirstPoints());
         server.sendMessage(game.getFirstPlayer(), responseMessage1);
         server.sendMessage(game.getSecondPlayer(), responseMessage2);
     }

@@ -4,6 +4,7 @@ import fertdt.helpers.EffectHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Block {
     private int id, hp;
@@ -52,5 +53,16 @@ public class Block {
     public void setEffects(List<Effect> effects) {
         this.effects = effects;
     }
-}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Block block)) return false;
+        return id == block.id && hp == block.hp && Objects.equals(effects, block.effects);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, hp, effects);
+    }
+}

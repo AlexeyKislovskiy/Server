@@ -1,5 +1,8 @@
 package fertdt.entities;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Game {
     public static final int RANDOM_ROOM_ID = 0;
 
@@ -13,15 +16,15 @@ public class Game {
     private Integer roomId, firstPlayer, secondPlayer, status, currentTurn, firstTurns, secondTurns;
     private Field firstField, secondField;
     private Character[] firstCharacters, secondCharacters;
-    private PassiveSkill[] firstSkills, secondSkills;
+    private AdditionalSkill[] firstSkills, secondSkills;
     private int[] firstPoints, secondPoints;
 
     public Game(Integer roomId, Integer firstPlayer, Integer status) {
         this.roomId = roomId;
         this.firstPlayer = firstPlayer;
         this.status = status;
-        firstTurns = 1;
-        secondTurns = 1;
+        firstTurns = 0;
+        secondTurns = 0;
         firstPoints = new int[]{0, 0};
         secondPoints = new int[]{0, 0};
     }
@@ -86,19 +89,19 @@ public class Game {
         this.secondCharacters = secondCharacters;
     }
 
-    public PassiveSkill[] getFirstSkills() {
+    public AdditionalSkill[] getFirstSkills() {
         return firstSkills;
     }
 
-    public void setFirstSkills(PassiveSkill[] firstSkills) {
+    public void setFirstSkills(AdditionalSkill[] firstSkills) {
         this.firstSkills = firstSkills;
     }
 
-    public PassiveSkill[] getSecondSkills() {
+    public AdditionalSkill[] getSecondSkills() {
         return secondSkills;
     }
 
-    public void setSecondSkills(PassiveSkill[] secondSkills) {
+    public void setSecondSkills(AdditionalSkill[] secondSkills) {
         this.secondSkills = secondSkills;
     }
 
@@ -140,5 +143,24 @@ public class Game {
 
     public void setSecondPoints(int[] secondPoints) {
         this.secondPoints = secondPoints;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Game game)) return false;
+        return Objects.equals(roomId, game.roomId) && Objects.equals(firstPlayer, game.firstPlayer) && Objects.equals(secondPlayer, game.secondPlayer) && Objects.equals(status, game.status) && Objects.equals(currentTurn, game.currentTurn) && Objects.equals(firstTurns, game.firstTurns) && Objects.equals(secondTurns, game.secondTurns) && Objects.equals(firstField, game.firstField) && Objects.equals(secondField, game.secondField) && Arrays.equals(firstCharacters, game.firstCharacters) && Arrays.equals(secondCharacters, game.secondCharacters) && Arrays.equals(firstSkills, game.firstSkills) && Arrays.equals(secondSkills, game.secondSkills) && Arrays.equals(firstPoints, game.firstPoints) && Arrays.equals(secondPoints, game.secondPoints);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(roomId, firstPlayer, secondPlayer, status, currentTurn, firstTurns, secondTurns, firstField, secondField);
+        result = 31 * result + Arrays.hashCode(firstCharacters);
+        result = 31 * result + Arrays.hashCode(secondCharacters);
+        result = 31 * result + Arrays.hashCode(firstSkills);
+        result = 31 * result + Arrays.hashCode(secondSkills);
+        result = 31 * result + Arrays.hashCode(firstPoints);
+        result = 31 * result + Arrays.hashCode(secondPoints);
+        return result;
     }
 }

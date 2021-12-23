@@ -6,7 +6,7 @@ import fertdt.ResponseMessage;
 import fertdt.entities.Character;
 import fertdt.entities.Field;
 import fertdt.entities.Game;
-import fertdt.entities.PassiveSkill;
+import fertdt.entities.AdditionalSkill;
 import fertdt.exceptions.ServerEventListenerException;
 import fertdt.exceptions.ServerException;
 import fertdt.helpers.GameStateHelper;
@@ -37,25 +37,25 @@ public class CharacterAndSkillSelectListener extends AbstractServerEventListener
             return;
         }
         List<Character> setCharacters = new ArrayList<>();
-        List<PassiveSkill> setSkills = new ArrayList<>();
+        List<AdditionalSkill> setSkills = new ArrayList<>();
         List<Integer> charactersId = new ArrayList<>(), skillsId = new ArrayList<>();
         for (int i = 0; i < Character.NUM_OF_CHARACTERS_FOR_EACH_PLAYER; i++) {
-            if (characters[i] > Character.NUM_OF_CHARACTERS || skills[i] > PassiveSkill.NUM_OF_PASSIVE_SKILLS ||
+            if (characters[i] > Character.NUM_OF_CHARACTERS || skills[i] > AdditionalSkill.NUM_OF_PASSIVE_SKILLS ||
                     charactersId.contains(characters[i]) || skillsId.contains(skills[i])) {
                 MessageSender.sendIncorrectRequestMessage(connectionId, server);
                 return;
             }
             setCharacters.add(new Character(characters[i]));
-            setSkills.add(new PassiveSkill(skills[i]));
+            setSkills.add(new AdditionalSkill(skills[i]));
             charactersId.add(characters[i]);
             skillsId.add(skills[i]);
         }
         if (game.getFirstPlayer() == connectionId) {
             game.setFirstCharacters(setCharacters.toArray(new Character[0]));
-            game.setFirstSkills(setSkills.toArray(new PassiveSkill[0]));
+            game.setFirstSkills(setSkills.toArray(new AdditionalSkill[0]));
         } else {
             game.setSecondCharacters(setCharacters.toArray(new Character[0]));
-            game.setSecondSkills(setSkills.toArray(new PassiveSkill[0]));
+            game.setSecondSkills(setSkills.toArray(new AdditionalSkill[0]));
         }
         MessageSender.sendOKMessage(connectionId, server);
         if (game.getFirstCharacters() != null && game.getSecondCharacters() != null) {

@@ -1,6 +1,7 @@
 package fertdt.entities;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class Effect {
     public static final int TARGET_CHARACTER = 1;
@@ -80,6 +81,10 @@ public class Effect {
         return times;
     }
 
+    public void setTimes(Integer times) {
+        this.times = times;
+    }
+
     public String getName() {
         return name;
     }
@@ -102,5 +107,17 @@ public class Effect {
 
     public void setPlayer(int player) {
         this.player = player;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Effect effect)) return false;
+        return id == effect.id && targetEntity == effect.targetEntity && targetPlayer == effect.targetPlayer && targetQuantity == effect.targetQuantity && player == effect.player && Objects.equals(name, effect.name) && Objects.equals(value, effect.value) && Objects.equals(turns, effect.turns) && Objects.equals(times, effect.times);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, targetEntity, targetPlayer, targetQuantity, player, name, value, turns, times);
     }
 }

@@ -19,14 +19,14 @@ public class Character {
             Map.entry(3, 50)
     );
     public static final Map<Integer, Skill> NORMAL_SKILLS = Map.ofEntries(
-            Map.entry(1, new Skill(new Effect[]{new Effect(7, 10, 1, 0, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
-            Map.entry(2, new Skill(new Effect[]{new Effect(1, 10, 1, 0, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
-            Map.entry(3, new Skill(new Effect[]{new Effect(1, 10, 1, 0, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5))
+            Map.entry(1, new Skill(new Effect[]{new Effect(8, 10, 1, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
+            Map.entry(2, new Skill(new Effect[]{new Effect(1, 10, null, 1, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
+            Map.entry(3, new Skill(new Effect[]{new Effect(1, 10, 1, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5))
     );
     public static final Map<Integer, SpecialSkill> SPECIAL_SKILLS = Map.ofEntries(
-            Map.entry(1, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU, Effect.TARGET_LIMITED)}, 25)),
-            Map.entry(2, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU, Effect.TARGET_LIMITED)}, 25)),
-            Map.entry(3, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, 0, Effect.TARGET_YOU, Effect.TARGET_LIMITED)}, 25))
+            Map.entry(1, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 25)),
+            Map.entry(2, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 25)),
+            Map.entry(3, new SpecialSkill(new Effect[]{new Effect(1, 20, 5, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 25))
     );
     private int id, basicDamage;
     private Skill normalSkill;
@@ -90,8 +90,7 @@ public class Character {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Character)) return false;
-        Character character = (Character) o;
+        if (!(o instanceof Character character)) return false;
         return id == character.id && basicDamage == character.basicDamage && madeMove == character.madeMove && Objects.equals(normalSkill, character.normalSkill) && Objects.equals(specialSkill, character.specialSkill) && Objects.equals(effects, character.effects);
     }
 

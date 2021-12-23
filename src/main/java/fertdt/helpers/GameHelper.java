@@ -2,15 +2,14 @@ package fertdt.helpers;
 
 import fertdt.ResponseMessage;
 import fertdt.Server;
+import fertdt.entities.Block;
 import fertdt.entities.Character;
 import fertdt.entities.Field;
 import fertdt.entities.Game;
 import fertdt.exceptions.ServerException;
 
-import java.util.List;
-
 public class GameHelper {
-    public static void gameOverCheck(Game game, Server server) throws ServerException {
+    public static boolean gameOverCheck(Game game, Server server) throws ServerException {
         if (game.getFirstTurns() == Game.GAME_DURATION && game.getSecondTurns() == Game.GAME_DURATION) {
             game.setStatus(Game.FINISHED);
             ResponseMessage winMessage = ResponseMessage.createFinishMessage(ResponseMessage.YOU);
@@ -26,7 +25,9 @@ public class GameHelper {
                 server.sendMessage(game.getFirstPlayer(), drawMessage);
                 server.sendMessage(game.getSecondPlayer(), drawMessage);
             }
+            return true;
         }
+        return false;
     }
 
     public static void allCharactersMadeMoveCheck(Character[] allMyCharacters, Game game, Server server) throws ServerException {
@@ -35,13 +36,14 @@ public class GameHelper {
             if (ch.isMadeMove()) num++;
         }
         if (num == Character.NUM_OF_CHARACTERS_FOR_EACH_PLAYER) {
-            EffectHelper.recalculateSkills(game);
+            EffectHelper.recalculateEffects(game);
+            recalculateCooldowns(allMyCharacters);
             ResponseMessage yourTurnMessage = ResponseMessage.createStartTurnMessage(ResponseMessage.YOU);
             ResponseMessage opponentsTurnMessage = ResponseMessage.createStartTurnMessage(ResponseMessage.OPPONENT);
             if (game.getCurrentTurn() == 2) {
                 game.setCurrentTurn(1);
                 game.setSecondTurns(game.getSecondTurns() + 1);
-                gameOverCheck(game, server);
+                if (gameOverCheck(game, server)) return;
                 for (Character el : game.getSecondCharacters()) {
                     el.setMadeMove(false);
                 }
@@ -50,7 +52,7 @@ public class GameHelper {
             } else {
                 game.setCurrentTurn(2);
                 game.setFirstTurns(game.getFirstTurns() + 1);
-                gameOverCheck(game, server);
+                if (gameOverCheck(game, server)) return;
                 for (Character el : game.getFirstCharacters()) {
                     el.setMadeMove(false);
                 }
@@ -61,19 +63,26 @@ public class GameHelper {
         }
     }
 
+    private static void recalculateCooldowns(Character[] characters) {
+        for (Character ch : characters) {
+            int cd = ch.getNormalSkill().getCurrentCooldown();
+            if (cd != 0) ch.getNormalSkill().setCurrentCooldown(cd - 1);
+        }
+    }
+
     public static void doNormalMove(Character character, Field field, int[] x, int[] y, int[] points) {
-        List<List<Integer>> blocks = field.getRawBlockState();
-        for (List<Integer> block : blocks) {
-            int num = block.get(0);
+        Block[] blocks = field.getBlocks();
+        for (Block block : blocks) {
+            int num = block.getId();
             for (int i = 0; i < x.length; i++) {
                 if (field.getG()[x[i]][y[i]] == num) {
-                    if (block.get(1) == 0) continue;
-                    int damage = character.getBasicDamage();
-                    block.set(1, block.get(1) - damage);
-                    if (block.get(1) <= 0) {
-                        block.set(1, 0);
-                        while (block.size() > 2) {
-                            block.remove(2);
+                    if (block.getHp() == 0) continue;
+                    int damage = EffectHelper.damageWithEffects(character.getBasicDamage(), character, block);
+                    block.setHp(block.getHp() - damage);
+                    if (block.getHp() <= 0) {
+                        block.setHp(0);
+                        while (block.getEffects().size() > 0) {
+                            block.getEffects().remove(0);
                         }
                         int pointsForBlock = 0;
                         for (int j = 0; j < field.getX().length; j++) {
@@ -87,12 +96,9 @@ public class GameHelper {
             }
         }
         int broken = 0;
-        for (List<Integer> block : blocks) {
-            if (block.get(1) == 0) broken++;
+        for (Block block : blocks) {
+            if (block.getHp() == 0) broken++;
         }
-        if (broken == blocks.size()) field.regenerateField();
+        if (broken == blocks.length) field.regenerateField();
     }
-
-
-
 }

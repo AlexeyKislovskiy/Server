@@ -1,5 +1,8 @@
 package fertdt.entities;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Skill{
     private Effect[] effects;
     private int basicCooldown, currentCooldown;
@@ -22,7 +25,25 @@ public class Skill{
         return currentCooldown;
     }
 
+    public void setCurrentCooldown(int currentCooldown) {
+        this.currentCooldown = currentCooldown;
+    }
+
     public void updateCooldown() {
         this.currentCooldown = basicCooldown;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Skill skill)) return false;
+        return basicCooldown == skill.basicCooldown && currentCooldown == skill.currentCooldown && Arrays.equals(effects, skill.effects);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(basicCooldown, currentCooldown);
+        result = 31 * result + Arrays.hashCode(effects);
+        return result;
     }
 }

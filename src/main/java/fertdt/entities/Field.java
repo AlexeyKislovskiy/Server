@@ -1,20 +1,16 @@
 package fertdt.entities;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Field {
     private int width, height;
-    private List<List<Integer>> blockState, blockStateInitial;
+    private List<List<Integer>> blockStateInitial;
     private int[][] x, y, g;
     private Block[] blocks;
 
-    private Field(int width, int height, List<List<Integer>> blockState, List<List<Integer>> blockStateInitial, int[][] x, int[][] y, int[][] g) {
+    private Field(int width, int height, List<List<Integer>> blockStateInitial, int[][] x, int[][] y, int[][] g) {
         this.width = width;
         this.height = height;
-        this.blockState = blockState;
         this.blockStateInitial = blockStateInitial;
         blocks = new Block[blockStateInitial.size()];
         for (int i = 0; i < blocks.length; i++) {
@@ -74,8 +70,7 @@ public class Field {
                 y[i * width + j][1] = g[i][j];
             }
         }
-        List<List<Integer>> blockStateInitial = new ArrayList<>(blockState);
-        return new Field(width, height, blockState, blockStateInitial, x, y, g);
+        return new Field(width, height, blockState, x, y, g);
     }
 
     public void regenerateField() {
@@ -83,7 +78,6 @@ public class Field {
         for (int i = 0; i < blocks.length; i++) {
             blocks[i] = new Block(blockStateInitial.get(i).get(0), blockStateInitial.get(i).get(1));
         }
-        this.blockState = new ArrayList<>(blockStateInitial);
     }
 
     public int getWidth() {
@@ -94,21 +88,6 @@ public class Field {
         return height;
     }
 
-    public List<List<Integer>> getRawBlockState() {
-        return blockState;
-    }
-
-    public int[][] getBlockState() {
-        int[][] ans = new int[blockState.size()][];
-        for (int i = 0; i < ans.length; i++) {
-            int[] el = new int[blockState.get(i).size()];
-            for (int j = 0; j < el.length; j++) {
-                el[j] = blockState.get(i).get(j);
-            }
-            ans[i] = el;
-        }
-        return ans;
-    }
 
     public List<List<Integer>> getBlockStateInitial() {
         return blockStateInitial;
@@ -128,5 +107,22 @@ public class Field {
 
     public Block[] getBlocks() {
         return blocks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Field field)) return false;
+        return width == field.width && height == field.height && Objects.equals(blockStateInitial, field.blockStateInitial) && Arrays.deepEquals(x, field.x) && Arrays.deepEquals(y, field.y) && Arrays.deepEquals(g, field.g) && Arrays.equals(blocks, field.blocks);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(width, height, blockStateInitial);
+        result = 31 * result + Arrays.deepHashCode(x);
+        result = 31 * result + Arrays.deepHashCode(y);
+        result = 31 * result + Arrays.deepHashCode(g);
+        result = (31 * result) + Arrays.hashCode(blocks);
+        return result;
     }
 }

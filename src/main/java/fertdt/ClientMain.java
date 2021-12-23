@@ -32,7 +32,10 @@ public class ClientMain {
                 Map.entry(7, RequestMessage.createNormalMoveMessage(0, x, y)),
                 Map.entry(8, RequestMessage.createNormalMoveMessage(1, x, y)),
                 Map.entry(9, RequestMessage.createNormalMoveMessage(2, x, y)),
-                Map.entry(10, RequestMessage.createExitRequestMessage())
+                Map.entry(10, RequestMessage.createSpecialSkillMessage(0, new int[0], new int[0], new int[0], new int[0], new int[0], new int[0])),
+                Map.entry(11, RequestMessage.createSpecialSkillMessage(1, new int[0], new int[0], new int[0], new int[0], new int[0], new int[0])),
+                Map.entry(12, RequestMessage.createSpecialSkillMessage(2, new int[0], new int[0], new int[0], new int[0], new int[0], new int[0])),
+                Map.entry(13, RequestMessage.createExitRequestMessage())
         );
         read(s);
         while (true) {

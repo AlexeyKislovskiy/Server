@@ -16,6 +16,9 @@ public class Effect {
     public static final int VALUABLE_TRUE = 1;
     public static final int VALUABLE_FALSE = 2;
 
+    public static final int BUFF = 1;
+    public static final int DEBUFF = 2;
+
     public static final Map<Integer, String> NAMES = Map.ofEntries(
             Map.entry(1, "AttackUp"),
             Map.entry(2, "AttackUpPercent"),
@@ -24,7 +27,22 @@ public class Effect {
             Map.entry(5, "DefenceUp"),
             Map.entry(6, "DefenceUpPercent"),
             Map.entry(7, "DefenceDown"),
-            Map.entry(8, "DefenceDownPercent")
+            Map.entry(8, "DefenceDownPercent"),
+            Map.entry(9, "Invisible"),
+            Map.entry(10, "IgnoreInvisible"),
+            Map.entry(11, "InstantKill"),
+            Map.entry(12, "Heal"),
+            Map.entry(13, "ReverseDamage"),
+            Map.entry(14, "BlockSkillUse"),
+            Map.entry(15, "BlockMove"),
+            Map.entry(16, "DebuffResistBlock"),
+            Map.entry(17, "DebuffResistCharacter"),
+            Map.entry(18, "BuffResistBlock"),
+            Map.entry(19, "BuffResistCharacter"),
+            Map.entry(20, "DebuffClearBlock"),
+            Map.entry(21, "DebuffClearCharacter"),
+            Map.entry(22, "BuffClearBlock"),
+            Map.entry(23, "BuffClearCharacter")
     );
     public static final Map<Integer, Integer> TARGETS = Map.ofEntries(
             Map.entry(1, TARGET_CHARACTER),
@@ -34,7 +52,22 @@ public class Effect {
             Map.entry(5, TARGET_BLOCK),
             Map.entry(6, TARGET_BLOCK),
             Map.entry(7, TARGET_BLOCK),
-            Map.entry(8, TARGET_BLOCK)
+            Map.entry(8, TARGET_BLOCK),
+            Map.entry(9, TARGET_BLOCK),
+            Map.entry(10, TARGET_CHARACTER),
+            Map.entry(11, TARGET_BLOCK),
+            Map.entry(12, TARGET_BLOCK),
+            Map.entry(13, TARGET_BLOCK),
+            Map.entry(14, TARGET_CHARACTER),
+            Map.entry(15, TARGET_CHARACTER),
+            Map.entry(16, TARGET_BLOCK),
+            Map.entry(17, TARGET_CHARACTER),
+            Map.entry(18, TARGET_BLOCK),
+            Map.entry(19, TARGET_CHARACTER),
+            Map.entry(20, TARGET_BLOCK),
+            Map.entry(21, TARGET_CHARACTER),
+            Map.entry(22, TARGET_BLOCK),
+            Map.entry(23, TARGET_CHARACTER)
     );
     public static final Map<Integer, Integer> VALUABLE = Map.ofEntries(
             Map.entry(1, VALUABLE_TRUE),
@@ -44,9 +77,49 @@ public class Effect {
             Map.entry(5, VALUABLE_TRUE),
             Map.entry(6, VALUABLE_TRUE),
             Map.entry(7, VALUABLE_TRUE),
-            Map.entry(8, VALUABLE_TRUE)
+            Map.entry(8, VALUABLE_TRUE),
+            Map.entry(9, VALUABLE_FALSE),
+            Map.entry(10, VALUABLE_FALSE),
+            Map.entry(11, VALUABLE_FALSE),
+            Map.entry(12, VALUABLE_TRUE),
+            Map.entry(13, VALUABLE_FALSE),
+            Map.entry(14, VALUABLE_FALSE),
+            Map.entry(15, VALUABLE_FALSE),
+            Map.entry(16, VALUABLE_FALSE),
+            Map.entry(17, VALUABLE_FALSE),
+            Map.entry(18, VALUABLE_FALSE),
+            Map.entry(19, VALUABLE_FALSE),
+            Map.entry(20, VALUABLE_FALSE),
+            Map.entry(21, VALUABLE_FALSE),
+            Map.entry(22, VALUABLE_FALSE),
+            Map.entry(23, VALUABLE_FALSE)
     );
-    private int id, targetEntity, targetPlayer, targetQuantity, player;
+    public static final Map<Integer, Integer> EFFECT_STATUS = Map.ofEntries(
+            Map.entry(1, BUFF),
+            Map.entry(2, BUFF),
+            Map.entry(3, DEBUFF),
+            Map.entry(4, DEBUFF),
+            Map.entry(5, DEBUFF),
+            Map.entry(6, DEBUFF),
+            Map.entry(7, BUFF),
+            Map.entry(8, BUFF),
+            Map.entry(9, DEBUFF),
+            Map.entry(10, BUFF),
+            Map.entry(11, BUFF),
+            Map.entry(12, DEBUFF),
+            Map.entry(13, DEBUFF),
+            Map.entry(14, DEBUFF),
+            Map.entry(15, DEBUFF),
+            Map.entry(16, BUFF),
+            Map.entry(17, BUFF),
+            Map.entry(18, DEBUFF),
+            Map.entry(19, DEBUFF),
+            Map.entry(20, BUFF),
+            Map.entry(21, BUFF),
+            Map.entry(22, DEBUFF),
+            Map.entry(23, DEBUFF)
+    );
+    private int id, targetEntity, targetPlayer, targetQuantity, player, effectStatus;
     private String name;
     private Integer value, turns, times;
 
@@ -59,6 +132,7 @@ public class Effect {
         this.targetQuantity = targetQuantity;
         this.targetEntity = TARGETS.get(id);
         this.name = NAMES.get(id);
+        this.effectStatus = EFFECT_STATUS.get(id);
     }
 
     public int getId() {
@@ -99,6 +173,10 @@ public class Effect {
 
     public int getTargetQuantity() {
         return targetQuantity;
+    }
+
+    public int getEffectStatus() {
+        return effectStatus;
     }
 
     public int getPlayer() {

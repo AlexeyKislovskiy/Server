@@ -31,6 +31,7 @@ public class GameHelper {
     }
 
     public static void allCharactersMadeMoveCheck(Character[] allMyCharacters, Game game, Server server) throws ServerException {
+        EffectHelper.blockMoveCheck(allMyCharacters);
         int num = 0;
         for (Character ch : allMyCharacters) {
             if (ch.isMadeMove()) num++;
@@ -60,6 +61,11 @@ public class GameHelper {
                 server.sendMessage(game.getSecondPlayer(), yourTurnMessage);
             }
             MessageSender.sendGameStateMessage(game, server);
+            Character[] allOpponentsCharacters;
+            if (game.getFirstCharacters() == allMyCharacters) allOpponentsCharacters = game.getSecondCharacters();
+            else allOpponentsCharacters = game.getFirstCharacters();
+            EffectHelper.blockMoveCheck(allOpponentsCharacters);
+            allCharactersMadeMoveCheck(allOpponentsCharacters, game, server);
         }
     }
 
@@ -77,7 +83,7 @@ public class GameHelper {
             for (int i = 0; i < x.length; i++) {
                 if (field.getG()[x[i]][y[i]] == num) {
                     if (block.getHp() == 0) continue;
-                    int damage = EffectHelper.damageWithEffects(character.getBasicDamage(), character, block);
+                    int damage = EffectHelper.damageWithEffects(character.getBasicDamage(), character, block, field);
                     block.setHp(block.getHp() - damage);
                     if (block.getHp() <= 0) {
                         block.setHp(0);

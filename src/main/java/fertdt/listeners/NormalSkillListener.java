@@ -42,7 +42,7 @@ public class NormalSkillListener extends AbstractServerEventListener {
             opponentsField = game.getFirstField();
         }
         Character character = allMyCharacters[characterNumber];
-        if (character == null || character.getNormalSkill().getCurrentCooldown() != 0 || character.isMadeMove()) {
+        if (character == null || character.getNormalSkill().getCurrentCooldown() != 0 || character.isMadeMove() || EffectHelper.blockSkillUseCheck(character)) {
             MessageSender.sendIncorrectRequestMessage(connectionId, server);
             return;
         }
@@ -54,7 +54,8 @@ public class NormalSkillListener extends AbstractServerEventListener {
                 xOpponent = message.getXOpponent(), yOpponent = message.getYOpponent();
 
         EffectHelper.addEffectsToCharacters(true, game.getCurrentTurn(), myCharacters, opponentsCharacters, character, allMyCharacters, allOpponentsCharacters);
-        EffectHelper.addEffectsToBlocks(true,game.getCurrentTurn(), xMy, yMy, xOpponent, yOpponent, character, myField, opponentsField);
+        EffectHelper.addEffectsToBlocks(true, game.getCurrentTurn(), xMy, yMy, xOpponent, yOpponent, character, myField, opponentsField);
+        EffectHelper.handleInstantEffects(game);
         MessageSender.sendGameStateMessage(game, server);
         GameHelper.allCharactersMadeMoveCheck(allMyCharacters, game, server);
     }

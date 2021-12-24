@@ -45,7 +45,7 @@ public class SpecialSkillListener extends AbstractServerEventListener {
             myPoints = game.getSecondPoints();
         }
         Character character = allMyCharacters[characterNumber];
-        if (character == null || character.getSpecialSkill().getCost() > myPoints[1] || character.isMadeMove()) {
+        if (character == null || character.getSpecialSkill().getCost() > myPoints[1] || character.isMadeMove() || EffectHelper.blockSkillUseCheck(character)) {
             MessageSender.sendIncorrectRequestMessage(connectionId, server);
             return;
         }
@@ -58,6 +58,7 @@ public class SpecialSkillListener extends AbstractServerEventListener {
 
         EffectHelper.addEffectsToCharacters(false, game.getCurrentTurn(), myCharacters, opponentsCharacters, character, allMyCharacters, allOpponentsCharacters);
         EffectHelper.addEffectsToBlocks(false, game.getCurrentTurn(), xMy, yMy, xOpponent, yOpponent, character, myField, opponentsField);
+        EffectHelper.handleInstantEffects(game);
         MessageSender.sendGameStateMessage(game, server);
         GameHelper.allCharactersMadeMoveCheck(allMyCharacters, game, server);
     }

@@ -19,8 +19,8 @@ public class Character {
             Map.entry(3, 50)
     );
     public static final Map<Integer, Skill> NORMAL_SKILLS = Map.ofEntries(
-            Map.entry(1, new Skill(new Effect[]{new Effect(8, 10, 1, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
-            Map.entry(2, new Skill(new Effect[]{new Effect(1, 10, null, 1, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
+            Map.entry(1, new Skill(new Effect[]{new Effect(18, null, 1, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
+            Map.entry(2, new Skill(new Effect[]{new Effect(5, 10, 1, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5)),
             Map.entry(3, new Skill(new Effect[]{new Effect(1, 10, 1, null, Effect.TARGET_YOU, Effect.TARGET_ALL)}, 5))
     );
     public static final Map<Integer, SpecialSkill> SPECIAL_SKILLS = Map.ofEntries(

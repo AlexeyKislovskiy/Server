@@ -13,19 +13,8 @@ import fertdt.helpers.MessageSender;
 public class NormalMoveListener extends AbstractServerEventListener {
     @Override
     public void handle(int connectionId, RequestMessage message) throws ServerEventListenerException, ServerException {
-        if (!this.init) {
-            throw new ServerEventListenerException("Listener has not been initiated yet");
-        }
-        if (!GameStateHelper.isGameStatus(connectionId, Game.IN_PROGRESS, server)) {
-            MessageSender.sendIncorrectRequestMessage(connectionId, server);
-            return;
-        }
+        if (!GameHelper.basicMoveCorrectCheck(this.init, connectionId, server)) return;
         Game game = server.getGames().get(GameStateHelper.gameIndexByConnectionId(connectionId, server));
-        if (connectionId == game.getFirstPlayer() && game.getCurrentTurn() == 2 ||
-                connectionId == game.getSecondPlayer() && game.getCurrentTurn() == 1) {
-            MessageSender.sendIncorrectRequestMessage(connectionId, server);
-            return;
-        }
         int characterNumber = message.getCharacter();
         Character[] allMyCharacters;
         Field field;

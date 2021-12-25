@@ -6,9 +6,27 @@ import fertdt.entities.Block;
 import fertdt.entities.Character;
 import fertdt.entities.Field;
 import fertdt.entities.Game;
+import fertdt.exceptions.ServerEventListenerException;
 import fertdt.exceptions.ServerException;
 
 public class GameHelper {
+    public static boolean basicMoveCorrectCheck(boolean init, int connectionId, Server server) throws ServerEventListenerException, ServerException {
+        if (!init) {
+            throw new ServerEventListenerException("Listener has not been initiated yet");
+        }
+        if (!GameStateHelper.isGameStatus(connectionId, Game.IN_PROGRESS, server)) {
+            MessageSender.sendIncorrectRequestMessage(connectionId, server);
+            return false;
+        }
+        Game game = server.getGames().get(GameStateHelper.gameIndexByConnectionId(connectionId, server));
+        if (connectionId == game.getFirstPlayer() && game.getCurrentTurn() == 2 ||
+                connectionId == game.getSecondPlayer() && game.getCurrentTurn() == 1) {
+            MessageSender.sendIncorrectRequestMessage(connectionId, server);
+            return false;
+        }
+        return true;
+    }
+
     public static boolean gameOverCheck(Game game, Server server) throws ServerException {
         if (game.getFirstTurns() == Game.GAME_DURATION && game.getSecondTurns() == Game.GAME_DURATION) {
             game.setStatus(Game.FINISHED);
@@ -37,6 +55,7 @@ public class GameHelper {
             if (ch.isMadeMove()) num++;
         }
         if (num == Character.NUM_OF_CHARACTERS_FOR_EACH_PLAYER) {
+            game.setUsedSkills(0);
             EffectHelper.recalculateEffects(game);
             recalculateCooldowns(allMyCharacters);
             ResponseMessage yourTurnMessage = ResponseMessage.createStartTurnMessage(ResponseMessage.YOU);

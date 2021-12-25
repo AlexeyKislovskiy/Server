@@ -14,19 +14,8 @@ import fertdt.helpers.MessageSender;
 public class SpecialSkillListener extends AbstractServerEventListener {
     @Override
     public void handle(int connectionId, RequestMessage message) throws ServerEventListenerException, ServerException {
-        if (!this.init) {
-            throw new ServerEventListenerException("Listener has not been initiated yet");
-        }
-        if (!GameStateHelper.isGameStatus(connectionId, Game.IN_PROGRESS, server)) {
-            MessageSender.sendIncorrectRequestMessage(connectionId, server);
-            return;
-        }
+        if (!GameHelper.basicMoveCorrectCheck(this.init, connectionId, server)) return;
         Game game = server.getGames().get(GameStateHelper.gameIndexByConnectionId(connectionId, server));
-        if (connectionId == game.getFirstPlayer() && game.getCurrentTurn() == 2 ||
-                connectionId == game.getSecondPlayer() && game.getCurrentTurn() == 1) {
-            MessageSender.sendIncorrectRequestMessage(connectionId, server);
-            return;
-        }
         int characterNumber = message.getCharacter();
         Character[] allMyCharacters, allOpponentsCharacters;
         Field myField, opponentsField;
@@ -45,11 +34,13 @@ public class SpecialSkillListener extends AbstractServerEventListener {
             myPoints = game.getSecondPoints();
         }
         Character character = allMyCharacters[characterNumber];
-        if (character == null || character.getSpecialSkill().getCost() > myPoints[1] || character.isMadeMove() || EffectHelper.blockSkillUseCheck(character)) {
+        if (character == null || character.getSpecialSkill().getCost() > myPoints[1] || character.isMadeMove()
+                || EffectHelper.blockSkillUseCheck(character) || game.getUsedSkills() >= game.getFirstTurns() + game.getSecondTurns()) {
             MessageSender.sendIncorrectRequestMessage(connectionId, server);
             return;
         }
         MessageSender.sendOKMessage(connectionId, server);
+        game.setUsedSkills(game.getUsedSkills() + 1);
         character.setMadeMove(true);
         myPoints[1] -= character.getSpecialSkill().getCost();
         int[] myCharacters = message.getCharactersMy(), opponentsCharacters = message.getCharactersOpponent(),

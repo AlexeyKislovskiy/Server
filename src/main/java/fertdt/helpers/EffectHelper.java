@@ -9,43 +9,33 @@ import java.util.List;
 public class EffectHelper {
     public static void addEffectsToCharacters(boolean isNormalSkill, int player, int[] my, int[] opponents, Character character, Character[] myCharacters, Character[] opponentsCharacters) {
         Effect[] effects;
-        Gson gson = new Gson();
         if (isNormalSkill) effects = character.getNormalSkill().getEffects();
         else effects = character.getSpecialSkill().getEffects();
         for (Effect el : effects) {
             if (el.getTargetEntity() == Effect.TARGET_CHARACTER) {
                 if (el.getTargetPlayer() == Effect.TARGET_YOU) {
-                    if (el.getTargetQuantity() == Effect.TARGET_ALL) {
-                        for (Character ch : myCharacters) {
-                            if (!effectsResistCharacterCheck(ch, el.getEffectStatus())) {
-                                el.setPlayer(player);
-                                ch.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                            }
-                        }
-                    } else {
-                        for (int j : my) {
-                            if (!effectsResistCharacterCheck(myCharacters[j], el.getEffectStatus())) {
-                                el.setPlayer(player);
-                                myCharacters[j].getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                            }
-                        }
-                    }
+                    effectsToCharacters(el, myCharacters, player, my);
                 } else {
-                    if (el.getTargetQuantity() == Effect.TARGET_ALL) {
-                        for (Character ch : opponentsCharacters) {
-                            if (!effectsResistCharacterCheck(ch, el.getEffectStatus())) {
-                                el.setPlayer(player);
-                                ch.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                            }
-                        }
-                    } else {
-                        for (int j : opponents) {
-                            if (!effectsResistCharacterCheck(opponentsCharacters[j], el.getEffectStatus())) {
-                                el.setPlayer(player);
-                                opponentsCharacters[j].getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                            }
-                        }
-                    }
+                    effectsToCharacters(el, opponentsCharacters, player, opponents);
+                }
+            }
+        }
+    }
+
+    private static void effectsToCharacters(Effect el, Character[] characters, int player, int[] targetCharacters) {
+        Gson gson = new Gson();
+        if (el.getTargetQuantity() == Effect.TARGET_ALL) {
+            for (Character ch : characters) {
+                if (!effectsResistCharacterCheck(ch, el.getEffectStatus())) {
+                    el.setPlayer(player);
+                    ch.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
+                }
+            }
+        } else {
+            for (int j : targetCharacters) {
+                if (!effectsResistCharacterCheck(characters[j], el.getEffectStatus())) {
+                    el.setPlayer(player);
+                    characters[j].getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
                 }
             }
         }
@@ -59,49 +49,33 @@ public class EffectHelper {
         for (Effect el : effects) {
             if (el.getTargetEntity() == Effect.TARGET_BLOCK) {
                 if (el.getTargetPlayer() == Effect.TARGET_YOU) {
-                    Block[] blocks = myField.getBlocks();
-                    if (el.getTargetQuantity() == Effect.TARGET_ALL) {
-                        for (Block block : blocks) {
-                            if (!effectsResistBlockCheck(block, el.getEffectStatus())) {
-                                el.setPlayer(player);
-                                block.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                            }
-                        }
-                    } else {
-                        for (Block block : blocks) {
-                            int num = block.getId();
-                            for (int i = 0; i < xMy.length; i++) {
-                                if (myField.getG()[xMy[i]][yMy[i]] == num) {
-                                    if (!effectsResistBlockCheck(block, el.getEffectStatus())) {
-                                        el.setPlayer(player);
-                                        block.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    effectsToBlocks(myField, el, player, xMy, yMy);
                 } else {
-                    Block[] blocks = opponentsField.getBlocks();
-                    if (el.getTargetQuantity() == Effect.TARGET_ALL) {
-                        for (Block block : blocks) {
-                            if (!effectsResistBlockCheck(block, el.getEffectStatus())) {
-                                el.setPlayer(player);
-                                block.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                            }
-                        }
-                    } else {
-                        for (Block block : blocks) {
-                            int num = block.getId();
-                            for (int i = 0; i < xOpponent.length; i++) {
-                                if (opponentsField.getG()[xOpponent[i]][yOpponent[i]] == num) {
-                                    if (!effectsResistBlockCheck(block, el.getEffectStatus())) {
-                                        el.setPlayer(player);
-                                        block.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
-                                        break;
-                                    }
-                                }
-                            }
+                    effectsToBlocks(opponentsField, el, player, xOpponent, yOpponent);
+                }
+            }
+        }
+    }
+
+    private static void effectsToBlocks(Field field, Effect el, int player, int[] x, int[] y) {
+        Gson gson = new Gson();
+        Block[] blocks = field.getBlocks();
+        if (el.getTargetQuantity() == Effect.TARGET_ALL) {
+            for (Block block : blocks) {
+                if (!effectsResistBlockCheck(block, el.getEffectStatus())) {
+                    el.setPlayer(player);
+                    block.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
+                }
+            }
+        } else {
+            for (Block block : blocks) {
+                int num = block.getId();
+                for (int i = 0; i < x.length; i++) {
+                    if (field.getG()[x[i]][y[i]] == num) {
+                        if (!effectsResistBlockCheck(block, el.getEffectStatus())) {
+                            el.setPlayer(player);
+                            block.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
+                            break;
                         }
                     }
                 }
@@ -224,24 +198,22 @@ public class EffectHelper {
             Effect effect = effects.get(i);
             if (effect.getId() == 21) {
                 effects.remove(i);
-                for (int j = 0; j < effects.size(); j++) {
-                    Effect innerEffect = effects.get(j);
-                    if (innerEffect.getEffectStatus() == Effect.DEBUFF && (innerEffect.getTimes() != null || innerEffect.getTurns() != null)) {
-                        effects.remove(j);
-                        j--;
-                    }
-                }
+                characterRemoveEffects(effects, Effect.DEBUFF);
                 i = -1;
             } else if (effect.getId() == 23) {
                 effects.remove(i);
-                for (int j = 0; j < effects.size(); j++) {
-                    Effect innerEffect = effects.get(j);
-                    if (innerEffect.getEffectStatus() == Effect.BUFF && (innerEffect.getTimes() != null || innerEffect.getTurns() != null)) {
-                        effects.remove(j);
-                        j--;
-                    }
-                }
+                characterRemoveEffects(effects, Effect.BUFF);
                 i = -1;
+            }
+        }
+    }
+
+    private static void characterRemoveEffects(List<Effect> effects, int effectStatus) {
+        for (int j = 0; j < effects.size(); j++) {
+            Effect innerEffect = effects.get(j);
+            if (innerEffect.getEffectStatus() == effectStatus && (innerEffect.getTimes() != null || innerEffect.getTurns() != null)) {
+                effects.remove(j);
+                j--;
             }
         }
     }

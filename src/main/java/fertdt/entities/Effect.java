@@ -12,6 +12,7 @@ public class Effect {
 
     public static final int TARGET_LIMITED = 1;
     public static final int TARGET_ALL = 2;
+    public static final int TARGET_SELF = 3;
 
     public static final int VALUABLE_TRUE = 1;
     public static final int VALUABLE_FALSE = 2;

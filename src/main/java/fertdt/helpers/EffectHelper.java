@@ -14,15 +14,15 @@ public class EffectHelper {
         for (Effect el : effects) {
             if (el.getTargetEntity() == Effect.TARGET_CHARACTER) {
                 if (el.getTargetPlayer() == Effect.TARGET_YOU) {
-                    effectsToCharacters(el, myCharacters, player, my);
+                    effectsToCharacters(el, myCharacters, player, my, character);
                 } else {
-                    effectsToCharacters(el, opponentsCharacters, player, opponents);
+                    effectsToCharacters(el, opponentsCharacters, player, opponents, character);
                 }
             }
         }
     }
 
-    private static void effectsToCharacters(Effect el, Character[] characters, int player, int[] targetCharacters) {
+    private static void effectsToCharacters(Effect el, Character[] characters, int player, int[] targetCharacters, Character character) {
         Gson gson = new Gson();
         if (el.getTargetQuantity() == Effect.TARGET_ALL) {
             for (Character ch : characters) {
@@ -31,11 +31,19 @@ public class EffectHelper {
                     ch.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
                 }
             }
-        } else {
+        } else if (el.getTargetQuantity() == Effect.TARGET_LIMITED) {
             for (int j : targetCharacters) {
                 if (!effectsResistCharacterCheck(characters[j], el.getEffectStatus())) {
                     el.setPlayer(player);
                     characters[j].getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
+                }
+            }
+        } else {
+            for (Character ch : characters) {
+                if (ch.equals(character) && !effectsResistCharacterCheck(ch, el.getEffectStatus())) {
+                    el.setPlayer(player);
+                    ch.getEffects().add(gson.fromJson(gson.toJson(el), Effect.class));
+                    break;
                 }
             }
         }

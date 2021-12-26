@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Character {
-    public static final int NUM_OF_CHARACTERS = 3;
+    public static final int NUM_OF_CHARACTERS = 6;
 
     public static final int NUM_OF_CHARACTERS_FOR_EACH_PLAYER = 3;
 

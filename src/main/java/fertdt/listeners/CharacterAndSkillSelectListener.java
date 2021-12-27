@@ -3,10 +3,10 @@ package fertdt.listeners;
 import com.google.gson.Gson;
 import fertdt.RequestMessage;
 import fertdt.ResponseMessage;
+import fertdt.entities.AdditionalSkill;
 import fertdt.entities.Character;
 import fertdt.entities.Field;
 import fertdt.entities.Game;
-import fertdt.entities.AdditionalSkill;
 import fertdt.exceptions.ServerEventListenerException;
 import fertdt.exceptions.ServerException;
 import fertdt.helpers.GameStateHelper;
@@ -61,7 +61,7 @@ public class CharacterAndSkillSelectListener extends AbstractServerEventListener
         if (game.getFirstCharacters() != null && game.getSecondCharacters() != null) {
             int currentTurn = (int) (Math.random() * 2 + 1);
             game.setCurrentTurn(currentTurn);
-            Field field = Field.generateField(10, 10);
+            Field field = Field.generateField(Field.DEFAULT_WIDTH, Field.DEFAULT_HEIGHT);
             Gson gson = new Gson();
             game.setFirstField(gson.fromJson(gson.toJson(field), Field.class));
             game.setSecondField(gson.fromJson(gson.toJson(field), Field.class));

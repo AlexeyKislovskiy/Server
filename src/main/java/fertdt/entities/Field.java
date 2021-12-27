@@ -3,6 +3,8 @@ package fertdt.entities;
 import java.util.*;
 
 public class Field {
+    public static final int DEFAULT_WIDTH = 8, DEFAULT_HEIGHT = 8;
+
     private int width, height;
     private List<List<Integer>> blockStateInitial;
     private int[][] x, y, g;
